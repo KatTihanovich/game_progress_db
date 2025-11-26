@@ -1,4 +1,4 @@
-CREATE ROLE game_app;
+CREATE ROLE game_app LOGIN PASSWORD '${GAME_APP_PASSWORD}';
 
 GRANT CONNECT ON DATABASE game_progress_db TO game_app;
 

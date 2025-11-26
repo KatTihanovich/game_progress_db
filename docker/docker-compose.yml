@@ -1,33 +1,47 @@
-version: '3.9'
-
 services:
   postgres:
     image: postgres:15
     container_name: game_progress_db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}  # из .env
-      POSTGRES_DB: game_progress_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./db/scripts:/docker-entrypoint-initdb.d  # create_db.sql и drop_db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
+    networks:
+      - game_network
 
-  flyway:
+  flyway_migrations:
     image: flyway/flyway:9
     container_name: flyway_migrations
     depends_on:
-      - postgres
-    command: -url=jdbc:postgresql://postgres:5432/game_progress_db \
-             -user=postgres \
-             -password=${POSTGRES_PASSWORD:-postgres} \
-             -locations=filesystem:/flyway/sql migrate
-    volumes:
-      - ./db/migration:/flyway/sql
+      postgres:
+        condition: service_healthy
     environment:
-      FLYWAY_PLACEHOLDERS_GAMA_APP_PASSWORD: ${GAMA_APP_PASSWORD}
+      FLYWAY_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      FLYWAY_USER: ${POSTGRES_USER}
+      FLYWAY_PASSWORD: ${POSTGRES_PASSWORD}
+      FLYWAY_PLACEHOLDERS_GAME_APP_PASSWORD: ${GAME_APP_PASSWORD}
+      FLYWAY_LOCATIONS: filesystem:/flyway/sql/migration, filesystem:/flyway/sql/seeds
+    command: ["migrate"]
+    volumes:
+      - ../db/migration:/flyway/sql/migration
+      - ../db/seeds:/flyway/sql/seeds
+    restart: "no"
+    networks:
+      - game_network
 
 volumes:
   pgdata:
+
+networks:
+  game_network:
+    driver: bridge
