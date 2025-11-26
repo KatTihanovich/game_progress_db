@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: game_progress_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}  # из .env
+      POSTGRES_DB: game_progress_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/scripts:/docker-entrypoint-initdb.d  # create_db.sql и drop_db.sql
+
+  flyway:
+    image: flyway/flyway:9
+    container_name: flyway_migrations
+    depends_on:
+      - postgres
+    command: -url=jdbc:postgresql://postgres:5432/game_progress_db \
+             -user=postgres \
+             -password=${POSTGRES_PASSWORD:-postgres} \
+             -locations=filesystem:/flyway/sql migrate
+    volumes:
+      - ./db/migration:/flyway/sql
+    environment:
+      FLYWAY_PLACEHOLDERS_GAMA_APP_PASSWORD: ${GAMA_APP_PASSWORD}
+
+volumes:
+  pgdata:

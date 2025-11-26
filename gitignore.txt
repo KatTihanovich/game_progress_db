@@ -1,0 +1,5 @@
+.env
+db/scripts/local_role_passwords.sql
+
+*.log
+*.pid
