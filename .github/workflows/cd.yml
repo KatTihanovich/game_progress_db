@@ -17,5 +17,6 @@ jobs:
           FLYWAY_USER: ${{ secrets.DB_USER }}        
           FLYWAY_PASSWORD: ${{ secrets.DB_PASSWORD }}
           FLYWAY_LOCATIONS: filesystem:db/migration,filesystem:db/seeds
+          FLYWAY_PLACEHOLDERS_GAME_APP_PASSWORD: ${{ secrets.GAME_APP_PASSWORD }}
         with:
           args: migrate
