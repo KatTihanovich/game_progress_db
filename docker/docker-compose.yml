@@ -1,0 +1,70 @@
+services:
+  postgres:
+    image: postgres:15.10  # Конкретная версия вместо :15
+    container_name: game_progress_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      # Оптимизация PostgreSQL для контейнера
+      POSTGRES_INITDB_ARGS: "-E UTF8 --locale=en_US.UTF-8"
+    ports:
+      - "${POSTGRES_PORT:-5431}:5432"  # Параметризация порта
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s  # Менее агрессивно чем 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s  # Время на инициализацию
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    networks:
+      - game_network
+
+  flyway_migrations:
+    image: flyway/flyway:9.22.3  # Конкретная версия
+    container_name: flyway_migrations
+    depends_on:
+      postgres:
+        condition: service_healthy  # Ждем полной готовности БД
+    environment:
+      FLYWAY_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      FLYWAY_USER: ${POSTGRES_USER}
+      FLYWAY_PASSWORD: ${POSTGRES_PASSWORD}
+      FLYWAY_PLACEHOLDERS_GAME_APP_PASSWORD: ${GAME_APP_PASSWORD}
+      FLYWAY_LOCATIONS: filesystem:/flyway/sql/migration,filesystem:/flyway/sql/seeds
+      FLYWAY_BASELINE_ON_MIGRATE: "true"  # Для существующих БД
+      FLYWAY_VALIDATE_ON_MIGRATE: "true"  # Валидация перед миграцией
+    command: ["migrate"]
+    volumes:
+      - ../db/migration:/flyway/sql/migration:ro  # Read-only для безопасности
+      - ../db/seeds:/flyway/sql/seeds:ro
+    restart: "no"  # Миграции не должны перезапускаться
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    networks:
+      - game_network
+
+volumes:
+  pgdata:
+    name: game_progress_pgdata  # Явное имя volume
+
+networks:
+  game_network:
+    name: game_network
+    driver: bridge
