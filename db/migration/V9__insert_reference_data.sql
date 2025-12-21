@@ -1,8 +1,6 @@
 INSERT INTO levels (level_name, boss_on_level, stars_on_level)
 VALUES
-    ('Demo', false, 7), 
-    ('Forest', false, 5), 
-    ('Cave', false, 6), 
+    ('Forest And Cave', false, 7), 
     ('Anxiety Castle', true, 0) 
 ON CONFLICT (level_name) DO NOTHING;
 
@@ -11,5 +9,5 @@ VALUES
     ('First Steps', 'сomplete level 1'), 
     ('Explorer', 'play for 10 minutes'), 
     ('Boss Slayer', 'Defeat boss'), 
-    ('Master Adventurer', 'сomplete 3 levels')
+    ('Master Adventurer', 'collect 7 stars')
 ON CONFLICT (achievement_name) DO NOTHING;

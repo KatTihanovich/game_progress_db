@@ -7,30 +7,6 @@ RETURNING user_id;
 
 INSERT INTO progress (user_id, level_id, killed_enemies_number, solved_puzzles_number, time_spent, stars)
 VALUES
-    ((SELECT user_id FROM users WHERE nickname = 'alice'),
-        (SELECT level_id FROM levels WHERE level_name = 'Demo'),
-        0, 1, '00:02:15', 2),
-
-    ((SELECT user_id FROM users WHERE nickname = 'alice'),
-        (SELECT level_id FROM levels WHERE level_name = 'Demo'),
-        1, 0, '00:03:15', 1),
-  
-    ((SELECT user_id FROM users WHERE nickname = 'alice'),
-        (SELECT level_id FROM levels WHERE level_name = 'Forest'),
-        5, 2, '00:10:25', 3),
-
-    ((SELECT user_id FROM users WHERE nickname = 'bob'),
-        (SELECT level_id FROM levels WHERE level_name = 'Demo'),
-        1, 0, '00:03:00', 4),
-
-    ((SELECT user_id FROM users WHERE nickname = 'bob'),
-        (SELECT level_id FROM levels WHERE level_name = 'Cave'),
-        12, 5, '00:25:40', 4),
-
-    ((SELECT user_id FROM users WHERE nickname = 'charlie'),
-        (SELECT level_id FROM levels WHERE level_name = 'Demo'),
-        1, 0, '00:03:00', 7),
-
     ((SELECT user_id FROM users WHERE nickname = 'charlie'),
         (SELECT level_id FROM levels WHERE level_name = 'Anxiety Castle'),
         2, 1, '00:07:55', 0);
