@@ -1,0 +1,17 @@
+name: DB CD
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker://flyway/flyway:10-alpine
+        env:
+          FLYWAY_URL: ${{ secrets.DB_URL }}
+          FLYWAY_LOCATIONS: filesystem:db/migration,filesystem:db/seeds
+        with:
+          args: migrate
