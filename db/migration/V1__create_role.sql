@@ -1,6 +1,6 @@
 CREATE ROLE game_app LOGIN PASSWORD '${GAME_APP_PASSWORD}';
 
-GRANT CONNECT ON DATABASE game_progress_db TO game_app;
+GRANT CONNECT ON DATABASE game_progress_db_c1rr TO game_app;
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO game_app;
 
