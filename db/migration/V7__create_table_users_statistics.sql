@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS users_statistics (
-    statistics_id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL UNIQUE,
+    statistics_id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL UNIQUE,
     total_levels_completed INTEGER NOT NULL DEFAULT 0,
     total_time_played VARCHAR(8) NOT NULL DEFAULT '00:00:00',
     total_killed_enemies INTEGER NOT NULL DEFAULT 0,

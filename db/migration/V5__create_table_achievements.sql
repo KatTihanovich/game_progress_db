@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS achievements (
-    achievement_id SERIAL PRIMARY KEY,
+    achievement_id BIGSERIAL PRIMARY KEY,
     achievement_name TEXT NOT NULL UNIQUE,
     achievement_description TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

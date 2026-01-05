@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS users (
-    user_id SERIAL PRIMARY KEY,
+    user_id BIGSERIAL PRIMARY KEY,
     nickname VARCHAR(255) NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
     age INTEGER,
