@@ -6,8 +6,8 @@ ON CONFLICT (level_name) DO NOTHING;
 
 INSERT INTO achievements (achievement_name, achievement_description)
 VALUES
-    ('First Steps', 'сomplete level 1'), 
-    ('Explorer', 'play for 10 minutes'), 
+    ('First Steps', 'complete level 1'), 
+    ('Explorer', 'play for 5 minutes'), 
     ('Boss Slayer', 'Defeat boss'), 
-    ('Master Adventurer', 'collect 7 stars')
+    ('Master Adventurer', 'collect 4 stars')
 ON CONFLICT (achievement_name) DO NOTHING;
